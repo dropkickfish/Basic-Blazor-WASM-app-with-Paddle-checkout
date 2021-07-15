@@ -1,0 +1,43 @@
+@page "/paddle"
+@inject IJSRuntime jsRuntime
+
+<h1>Paddle</h1>
+
+<div id="main">
+            <form id="pre-checkout">
+                <input id="useremail" type="text" placeholder="Email address" @bind="CheckoutEmail" @bind:event="oninput">
+                <label for="country">Country:</label>
+
+                <select name="country" id="country" @bind="CheckoutCountry" @bind:event="oninput">
+                <option value="--">--</option>
+                <option value="GB">GB</option>
+                <option value="IE">IE</option>
+                <option value="PT">PT</option>
+                <option value="US">US</option>
+                </select>
+                <input id="postcode" type="text" placeholder="Your postcode" @bind="CheckoutPostcode" @bind:event="oninput">
+
+            </form>
+        </div>
+
+<button @onclick=ButtonClicked>Buy Now!</button>
+
+@code
+{   
+    public string CheckoutEmail { get; set; }
+    public string CheckoutCountry { get; set; }
+    public string CheckoutPostcode { get; set; }
+    public string CheckoutProduct = "12345";
+
+        private async Task ButtonClicked()
+    {
+        var checkout = new Checkout
+        {
+        Product = CheckoutProduct,
+        Email = CheckoutEmail,
+        Country = CheckoutCountry,
+        Postcode = CheckoutPostcode
+        };
+        await jsRuntime.InvokeVoidAsync("Paddle.Checkout.open", checkout);
+    }
+}
